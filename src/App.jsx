@@ -5,7 +5,23 @@
   function App() {
     const [todo, setTodo] = useState("")
     const [Todos, setTodos] = useState([]);
+    useEffect(() => {
+      let TodoString = localStorage.getItem("todos");
+      if (TodoString) {
+        let Local_Todos = JSON.parse(TodoString);
+        setTodos(Local_Todos);
+      }
+    }, []);
+  
+    useEffect(() => {
+      localStorage.setItem("todos", JSON.stringify(Todos));
+    }, [Todos]);
 
+    // 
+    // 
+    // 
+    // 
+    // Sort finihed and not finished
     const  Finished=()=> {
       let Finished_Todos = Todos.filter((iteration) => {
         return iteration.status == true;
@@ -20,6 +36,9 @@
       setTodos(not)
       
     }
+    //  End of storing
+
+    
 
     const handleEdit = (index) => {
       let t = Todos[index]
