@@ -1,15 +1,22 @@
   import { useEffect, useState } from 'react'
-  import { MdEdit, MdDelete } from "react-icons/md";
+  import { MdEdit, MdDelete } from "react-icons/md"; 
+  import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
   import './App.css'
   import Navbar from './components/Navbar'
   function App() {
+    const Notify = (message)=>{ 
+      toast.success(message)
+    }
     const [todo, setTodo] = useState("")
     const [Todos, setTodos] = useState([]);
+    const [FetchedTodos,setFetchedTodos] = useState([]);
     useEffect(() => {
       let TodoString = localStorage.getItem("todos");
       if (TodoString) {
         let Local_Todos = JSON.parse(TodoString);
         setTodos(Local_Todos);
+        setFetchedTodos(Local_Todos);
       }
     }, []);
   
@@ -26,14 +33,16 @@
       let Finished_Todos = Todos.filter((iteration) => {
         return iteration.status == true;
       });
-      setTodos(Finished_Todos)
+      // setTodos(Finished_Todos)
+      setFetchedTodos(Finished_Todos)
     }
     
     const  NotFinished=()=> {
       let not = Todos.filter((iteration) => {
         return iteration.status == false;
       });
-      setTodos(not)
+      // setTodos(not)
+      setFetchedTodos(not);
       
     }
     //  End of storing
@@ -54,12 +63,13 @@
         return idx !== index;
       });
       setTodos(newTodos);
+      Notify("Todo Deleted")
     }
 
     const handleAdd = () => {
       setTodos([...Todos, { todo, status: false }]);
       setTodo("");
-
+      Notify("Todo Added")
     }
     const handleChange = (e) => {
       setTodo(e.target.value);
@@ -69,8 +79,12 @@
       newTodos[index].status = !newTodos[index].status;
       setTodos(newTodos);
     }
+    const AllTodos = ()=>{
+      setFetchedTodos(Todos);
+    }
     return (
       <>
+      <ToastContainer theme='dark' transition: Bounce autoClose={1000} />
         <Navbar />
         <div className="container mx-auto mt-4 rounded-lg md:p-3 p-2">
           <h2 className='text-center font-bold text-[#FFE66D] text-2xl m-5'>All your Todoss on a single App.</h2>
@@ -81,6 +95,7 @@
           <div className="flex justify-center gap-2 m-4">
             <div className="text-center"><button onClick={Finished} className='bg-[#FFE66D] px-2 py-1 rounded-md'>Show Finished</button></div>
             <div className="text-center"><button onClick={NotFinished} className='bg-[#FFE66D] px-2 py-1 rounded-md'>Not Finished</button></div></div>
+            <div className='text-center'><button onClick={AllTodos} className='bg-[#FFE66D] px-2 py-1 rounded-md'>All Todos</button></div>
           <div className="Todoss bg-[#c5dfc5] mt-2  rounded-sm w-[100%] md:w-[80%] mx-auto pb-8">
             <div className="header flex justify-center p-2 items-center text-black w-3/4 mx-auto">
               <div className='px-4 py-2 font-bold'>TodoList</div>
@@ -88,7 +103,7 @@
               <div className='px-4 py-2 font-bold'>Manager Your Todoss at Once</div>
             </div>
             {Todos.length > 0 ? (
-              Todos.map((item, index) => (
+              FetchedTodos.map((item, index) => (
                 <div key={index} className="maps flex justify-between gap-2 w-4/5 mx-auto md:p-1 py-1 flex-wrap">
                   <div className={`${item.status ? "line-through" : ""} flex justify-center items-center gap-2`}>
                     <input type="checkbox" checked={item.status} onChange={(e) => { handleCheckbox(e, index);}} />
