@@ -24,16 +24,10 @@
       localStorage.setItem("todos", JSON.stringify(Todos));
     }, [Todos]);
 
-    // 
-    // 
-    // 
-    // 
-    // Sort finihed and not finished
     const  Finished=()=> {
       let Finished_Todos = Todos.filter((iteration) => {
         return iteration.status == true;
       });
-      // setTodos(Finished_Todos)
       setFetchedTodos(Finished_Todos)
     }
     
@@ -41,13 +35,9 @@
       let not = Todos.filter((iteration) => {
         return iteration.status == false;
       });
-      // setTodos(not)
       setFetchedTodos(not);
       
     }
-    //  End of storing
-
-    
 
     const handleEdit = (index) => {
       let t = Todos[index]
@@ -63,11 +53,13 @@
         return idx !== index;
       });
       setTodos(newTodos);
+      setFetchedTodos(newTodos);
       Notify("Todo Deleted")
     }
 
     const handleAdd = () => {
       setTodos([...Todos, { todo, status: false }]);
+      setFetchedTodos([...Todos, { todo, status: false }]);
       setTodo("");
       Notify("Todo Added")
     }
@@ -77,14 +69,15 @@
     const handleCheckbox = (e, index) => {
       let newTodos = [...Todos];
       newTodos[index].status = !newTodos[index].status;
-      setTodos(newTodos);
+      // setTodos(newTodos);
+      setFetchedTodos(newTodos)
     }
     const AllTodos = ()=>{
       setFetchedTodos(Todos);
     }
     return (
       <>
-      <ToastContainer theme='dark' transition: Bounce autoClose={1000} />
+      <ToastContainer theme='dark' transition: Flip autoClose={1000} />
         <Navbar />
         <div className="container mx-auto mt-4 rounded-lg md:p-3 p-2">
           <h2 className='text-center font-bold text-[#FFE66D] text-2xl m-5'>All your Todoss on a single App.</h2>
